@@ -61,3 +61,13 @@ Instructions covers both the old and new docker commands
     ```
     docker container stats
     ```
+
+13. Start new container interactively
+    ```
+    docker container run -it 
+    ```
+
+14. Run additional command in existing container
+    ```
+    docker container exec -it
+    ```
