@@ -16,16 +16,27 @@
 
 # Instructions from the app developer
 # - you should use the 'node' official image, with the alpine 6.x branch
+FROM node:15-alpine3.10
 # - this app listens on port 3000, but the container should launch on port 80
+EXPOSE 3000
   #  so it will respond to http://localhost:80 on your computer
 # - then it should use alpine package manager to install tini: 'apk add --update tini'
+RUN apk add --update tini 
 # - then it should create directory /usr/src/app for app files with 'mkdir -p /usr/src/app'
+ENV APP_PATH=/usr/src/app
+RUN mkdir -p ${APP_PATH}
+# Setting workind directory
+WORKDIR ${APP_PATH}
 # - Node uses a "package manager", so it needs to copy in package.json file
+COPY package.json package.json
 # - then it needs to run 'npm install' to install dependencies from that file
 # - to keep it clean and small, run 'npm cache clean --force' after above
+RUN npm install && npm cache clean --force
 # - then it needs to copy in all files from current directory
+COPY . ${APP_PATH}
 # - then it needs to start container with command '/sbin/tini -- node ./bin/www'
 # - in the end you should be using FROM, RUN, WORKDIR, COPY, EXPOSE, and CMD commands
+CMD ["/sbin/tini", "--", "node", "./bin/www"]
 
 # Bonus Extra Credit
 # this will not have you setting up a complete image useful for local development, test, and prod
@@ -35,33 +46,3 @@
 # Node Docker Good Defaults sample project on GitHub to change this Dockerfile for 
 # better local development with more advanced topics
 # https://github.com/BretFisher/node-docker-good-defaults
-
-# Base image
-FROM node:15-alpine3.10
-
-# Set env name for application path
-ENV APP_PATH=/usr/src/app
-
-# Exposing application port
-EXPOSE 3000
-
-# Install tini
-RUN apk add --update tini 
-
-# Create directory
-RUN mkdir -p ${APP_PATH}
-
-# Setting workind directory
-WORKDIR ${APP_PATH}
-
-# Copy package.json
-COPY package.json package.json
-
-# Install application package dependencies
-RUN npm install && npm cache clean --force
-
-# Copy all required files
-COPY . ${APP_PATH}
-
-# Start command
-CMD ["/sbin/tini", "--", "node", "./bin/www"]
