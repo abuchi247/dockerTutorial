@@ -37,7 +37,7 @@
 # https://github.com/BretFisher/node-docker-good-defaults
 
 # Base image
-FROM node:15.6.0-alpine3.10
+FROM node:15-alpine3.10
 
 # Set env name for application path
 ENV APP_PATH=/usr/src/app
